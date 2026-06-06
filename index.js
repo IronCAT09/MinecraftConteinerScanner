@@ -130,8 +130,6 @@ async function scanWorld(world) {
   const boxes = world.dimensions.map(normalize);
   const results = boxes.map((box) => ({
     name: box.name,
-    bounds: { min: box.min, max: box.max },
-    containers: [],
     totals: {},
     fullShulkers: {},
   }));
@@ -158,18 +156,7 @@ async function scanWorld(world) {
         for (let i = 0; i < boxes.length; i++) {
           if (!inside(boxes[i], x, y, z)) continue;
 
-          const localTotals = {};
-          const localFull = {};
-          collectItems(be.Items, localTotals, localFull);
-
-          results[i].containers.push({
-            type: be.id ?? "unknown",
-            x, y, z,
-            items: localTotals,
-            fullShulkers: localFull,
-          });
-          addInto(results[i].totals, localTotals);
-          addInto(results[i].fullShulkers, localFull);
+          collectItems(be.Items, results[i].totals, results[i].fullShulkers);
         }
       }
     }
@@ -216,13 +203,10 @@ async function main() {
 
   await writeFile(outFile, JSON.stringify(output, null, 2), "utf8");
 
-  const containerCount = worldResults.reduce(
-    (s, w) => s + w.dimensions.reduce((a, d) => a + d.containers.length, 0),
-    0
-  );
+  const itemKinds = Object.keys(grandTotals).length;
   const fullShulkerCount = Object.values(grandFullShulkers).reduce((a, b) => a + b, 0);
   console.log(
-    `\nГотово. Миров: ${worldResults.length}, контейнеров: ${containerCount}, полных шалкеров: ${fullShulkerCount}.`
+    `\nГотово. Миров: ${worldResults.length}, видов предметов: ${itemKinds}, полных шалкеров: ${fullShulkerCount}.`
   );
   console.log(`Записано в ${outFile}`);
 }
