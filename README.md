@@ -53,6 +53,66 @@ node index.js
 плюс агрегаты `totals` и `fullShulkers` на каждом уровне и общие `grandTotals` /
 `grandFullShulkers`.
 
+## Запуск на Ubuntu
+
+### 1. Установить Node.js (18+)
+
+```bash
+# из официального репозитория NodeSource (рекомендуется)
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt-get install -y nodejs git
+
+# проверка
+node -v
+npm -v
+```
+
+### 2. Клонировать репозиторий и установить зависимости
+
+```bash
+git clone https://github.com/IronCAT09/MinecraftConteinerScanner.git
+cd MinecraftConteinerScanner
+npm install
+```
+
+### 3. Указать пути к регионам
+
+Регионы лежат в каталоге мира на сервере, например:
+
+```
+<сервер>/world/region/r.X.Z.mca           # обычный мир
+<сервер>/world_nether/DIM-1/region/...     # ад
+<сервер>/world_the_end/DIM1/region/...     # энд
+```
+
+Пропиши абсолютные пути прямо в `config.js` (`regionDir`), либо положи/смонтируй
+регионы рядом. Скрипт читает файлы только на чтение — копировать не обязательно,
+достаточно прав на чтение.
+
+### 4. Запустить
+
+```bash
+node index.js
+```
+
+Появится `containers.json` в текущем каталоге.
+
+### Автообновление по расписанию (опционально)
+
+Чтобы JSON для сайта обновлялся, например, каждые 10 минут, через `cron`:
+
+```bash
+crontab -e
+```
+
+```cron
+*/10 * * * * cd /path/to/MinecraftConteinerScanner && /usr/bin/node index.js >> scan.log 2>&1
+```
+
+> Регионы на диске обновляются не мгновенно — Minecraft сбрасывает чанки на диск
+> при выгрузке/автосохранении. Для актуальных данных запускай сканер после
+> сохранения мира (или по нему).
+
 ## Структура
 
 - [`index.js`](index.js) — обход миров/кубоидов, сбор предметов, полные шалкеры.
