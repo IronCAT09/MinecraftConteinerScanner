@@ -1,0 +1,13 @@
+{
+  "name": "mc-container-scanner",
+  "version": "1.0.0",
+  "description": "Сканирует .mca регионы Minecraft 1.18+ и собирает содержимое контейнеров в JSON",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "prismarine-nbt": "^2.5.0"
+  }
+}

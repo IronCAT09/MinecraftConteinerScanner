@@ -1,0 +1,4 @@
+node_modules/
+containers.json
+worlds/
+*.mca
