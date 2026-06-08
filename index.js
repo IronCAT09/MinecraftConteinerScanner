@@ -140,6 +140,7 @@ async function scanWorld(world) {
   }
 
   for (const file of regionsNeeded(boxes)) {
+    const started = performance.now();
     const fullPath = path.join(world.regionDir, file);
     const m = /^r\.(-?\d+)\.(-?\d+)\.mca$/.exec(file);
     const [regionX, regionZ] = [Number(m[1]), Number(m[2])];
@@ -160,7 +161,8 @@ async function scanWorld(world) {
         }
       }
     }
-    console.log(`[${world.name}] [ok] ${file}`);
+    const ms = (performance.now() - started).toFixed(1);
+    console.log(`[${world.name}] [ok] ${file} — ${ms} мс`);
   }
 
   // итог по миру
@@ -181,6 +183,7 @@ async function scanWorld(world) {
 }
 
 async function main() {
+  const startedAll = performance.now();
   const worldResults = [];
   for (const world of worlds) {
     worldResults.push(await scanWorld(world));
@@ -205,9 +208,11 @@ async function main() {
 
   const itemKinds = Object.keys(grandTotals).length;
   const fullShulkerCount = Object.values(grandFullShulkers).reduce((a, b) => a + b, 0);
+  const totalMs = (performance.now() - startedAll).toFixed(1);
   console.log(
     `\nГотово. Миров: ${worldResults.length}, видов предметов: ${itemKinds}, полных шалкеров: ${fullShulkerCount}.`
   );
+  console.log(`Общее время обработки: ${totalMs} мс`);
   console.log(`Записано в ${outFile}`);
 }
 
